@@ -84,10 +84,13 @@ namespace Omnishop.ReceiptPrinting
                 styleByte += 16;
             if (font.DoubleWidth)
                 styleByte += 32;
-            if (font.Underline)
-                styleByte += 128;
 
             _sb.Append(ESC + "!" + (char)styleByte);
+
+            if (font.Underline)
+                _sb.Append(ESC + "-" + (char)01);
+            else
+                _sb.Append(ESC + "-" + (char)00);
         }
 
         private void WriteLineSettings(RDLLineSettings lineSettings)
