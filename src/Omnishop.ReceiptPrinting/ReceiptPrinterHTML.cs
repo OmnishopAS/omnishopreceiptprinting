@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Omnishop.ReceiptPrinting
 {
+
     /// <summary>
     /// IReceiptPrinter that builds a HTML string
     /// InitPage should be called before any data is written.
@@ -23,11 +24,18 @@ namespace Omnishop.ReceiptPrinting
 
         public void WriteText(string text, bool newLineAfter = true)
         {
-            WriteFontAndLineSettingsIfChanged();
+            //WriteFontAndLineSettingsIfChanged();
+            string cssClasses = GetCSSClasses();
 
-            _sb.AppendLine("<span>" + text + "</span>");
-            if(newLineAfter)
-                _sb.Append("<br/>");
+            if (!string.IsNullOrEmpty(text))
+            {
+                if (newLineAfter)
+                    _sb.Append("<div" + cssClasses + ">" + text + "</div>");
+                else
+                    _sb.Append("<span" + cssClasses + ">" + text + "</span>");
+            }
+            else if (newLineAfter)
+                _sb.AppendLine("<br/>");
         }
 
         public void WriteBarcode(string barcode)
@@ -37,7 +45,7 @@ namespace Omnishop.ReceiptPrinting
 
         public void WriteInitPage()
         {
-            _sb.AppendLine(@"<div style=""display: block; font-family: monospace; white-space: pre; margin:1em 0;"">");
+            _sb.AppendLine(@"<pre><div style=""display: block; font-family: monospace; white-space: pre; margin:1em 0;"">");
         }
 
         /// <summary>
@@ -45,7 +53,7 @@ namespace Omnishop.ReceiptPrinting
         /// </summary>
         public void WriteEndPage()
         {
-            _sb.AppendLine("</div>");
+            _sb.AppendLine("</div></pre>");
         }
 
         public string GetWrittenString()
@@ -66,6 +74,26 @@ namespace Omnishop.ReceiptPrinting
                 WriteLineSettings(_currentLineSettings);
                 _currentLineSettings.CloneToOther(_writtenLineSettings);
             }
+        }
+
+        private string GetCSSClasses()
+        {
+            string cssClasses = "";
+
+            if (_currentFont.Bold)
+                cssClasses += "receipt_bold ";
+            if (_currentFont.DoubleHeight && _currentFont.DoubleWidth)
+                cssClasses += "receipt_large ";
+            if (_currentFont.Underline)
+                cssClasses += "receipt_underlined ";
+            if (_currentLineSettings.Alignment == TextAlignments.Centered)
+                cssClasses += "receipt_centered ";
+            else if (_currentLineSettings.Alignment == TextAlignments.Right)
+                cssClasses += "receipt_rightaligned ";
+
+            if (!string.IsNullOrEmpty(cssClasses))
+                cssClasses = " class=\"" + cssClasses.TrimEnd(' ') + "\"";
+            return cssClasses;
         }
 
         private void WriteFontStyle(RDLFont font)
