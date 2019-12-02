@@ -25,10 +25,10 @@ namespace Omnishop.ReceiptPrinting
                 {
                     printer.WriteText(text.Text, text.NewLineAfter);
                 }
-                //else if (line is RDLBarcode barCode)
-                //{
-                //    printer.WriteBarcode(barcode.barcode);
-                //}
+                else if (line is RDLBarcode barcode)
+                {
+                    printer.WriteBarcode(barcode.Barcode);
+                }
                 else
                 {
                     throw new InvalidOperationException("Unkown RDL element: " + line.GetType());
@@ -91,6 +91,20 @@ namespace Omnishop.ReceiptPrinting
     {
         public string Text { get; set; }
         public bool NewLineAfter { get; set; }
+    }
+
+    public class RDLBarcode : ReceiptDocumentLine
+    {
+        public string Barcode { get; set; }
+        public BarcodeTypes Type { get; set; }
+    }
+
+    public enum BarcodeTypes
+    {
+        Default = 0,
+        EAN13 = 67,
+        EAN8 = 68,
+        CODE39 = 69
     }
 
     public enum TextAlignments

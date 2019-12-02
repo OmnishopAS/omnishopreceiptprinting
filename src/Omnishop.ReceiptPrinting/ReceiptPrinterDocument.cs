@@ -27,8 +27,14 @@ namespace Omnishop.ReceiptPrinting
             _writtenLines.Add(line);
         }
 
-        public void WriteBarcode(string barcode)
+        public void WriteBarcode(string barcode, BarcodeTypes barcodeType = BarcodeTypes.Default)
         {
+            var line = new RDLBarcode()
+            {
+                Barcode = barcode,
+                Type=barcodeType
+            };
+            _writtenLines.Add(line);
         }
 
         private void WriteFontAndLineSettingsIfChanged()

@@ -32,9 +32,16 @@ namespace Omnishop.ReceiptPrinting
                 _sb.Append(text);
         }
 
-        public void WriteBarcode(string barcode)
+        public void WriteBarcode(string barcode, BarcodeTypes barcodeType = BarcodeTypes.Default)
         {
-            throw new NotImplementedException();
+            if (barcodeType == BarcodeTypes.Default)
+                barcodeType = BarcodeTypes.CODE39;
+
+            _sb.Append((char)29 + "f" + (char)1);                                           //Select font for barcodetext
+            _sb.Append((char)29 + "H" + (char)2);                                           //Display text below barcode
+            _sb.Append((char)29 + "h" + (char)70);                                          //Set height
+            _sb.Append((char)29 + "w" + (char)3);                                           //Set width
+            _sb.Append((char)29 + "k" + (char)barcodeType + (char)barcode.Length);          //Print barcode
         }
 
         public void WriteInitPage()

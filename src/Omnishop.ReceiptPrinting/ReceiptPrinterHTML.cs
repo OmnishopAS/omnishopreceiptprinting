@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 
 namespace Omnishop.ReceiptPrinting
@@ -33,9 +35,28 @@ namespace Omnishop.ReceiptPrinting
                 _sb.AppendLine("<br/>");
         }
 
-        public void WriteBarcode(string barcode)
+        public void WriteBarcode(string barcode, BarcodeTypes barcodeType = BarcodeTypes.Default)
         {
-            throw new NotImplementedException();
+            _sb.AppendLine(@"<img class='Barcode' src='" + this.CreateBarcodeImgSrc(barcode) + "'></img>");
+
+        }
+
+        private string CreateBarcodeImgSrc(string barcode)
+        {
+            if (string.IsNullOrEmpty(barcode))
+                return string.Empty;
+
+            using (var b = new BarcodeLib.Barcode())
+            {
+                using (var img = b.Encode(BarcodeLib.TYPE.CODE39Extended, barcode, Color.Black, Color.Transparent, 350, 50))
+                {
+                    using (var ms = new System.IO.MemoryStream())
+                    {
+                        img.Save(ms, ImageFormat.Png);
+                        return @"data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
+                    }
+                }
+            }
         }
 
         public void WriteInitPage()

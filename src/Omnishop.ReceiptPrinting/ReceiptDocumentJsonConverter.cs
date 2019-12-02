@@ -40,6 +40,8 @@ namespace Omnishop.ReceiptPrinting
                     return new RDLLineSettings();
                 case "RDLText":
                     return new RDLText();
+                case "RDLBarcode":
+                    return new RDLBarcode();
                 default:
                     return null;
             }
