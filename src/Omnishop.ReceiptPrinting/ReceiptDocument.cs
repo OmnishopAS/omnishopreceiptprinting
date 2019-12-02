@@ -27,7 +27,7 @@ namespace Omnishop.ReceiptPrinting
                 }
                 else if (line is RDLBarcode barcode)
                 {
-                    printer.WriteBarcode(barcode.Barcode);
+                    printer.WriteBarcode(barcode.Barcode, barcode.Type);
                 }
                 else
                 {
