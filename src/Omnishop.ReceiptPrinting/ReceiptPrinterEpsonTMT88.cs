@@ -41,13 +41,13 @@ namespace Omnishop.ReceiptPrinting
             _sb.Append((char)29 + "H" + (char)2);                                           //Display text below barcode
             _sb.Append((char)29 + "h" + (char)70);                                          //Set height
             _sb.Append((char)29 + "w" + (char)3);                                           //Set width
-            _sb.Append((char)29 + "k" + (char)barcodeType + (char)barcode.Length);          //Print barcode
+            _sb.Append((char)29 + "k" + (char)barcodeType + (char)barcode.Length + barcode);          //Print barcode
         }
 
         public void WriteInitPage()
         {
             //Init, Norsk tegnsett, Nordisk codepage (865)
-            _sb.Append((char)27 + "@" + (char)27 + "R" + (char)9 + (char)27 + "t" + (char)5);
+            _sb.Append((char)27 + "@" + (char)27 + "R" + (char)3 + (char)27 + "t" + (char)5);
 
             //Skriver ut logo nr 1 i printerens NVRAM
             _sb.AppendLine("" + (char)28 + (char)112 + (char)1 + (char)0);
