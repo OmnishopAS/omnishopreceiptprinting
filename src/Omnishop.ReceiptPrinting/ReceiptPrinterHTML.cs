@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Text;
 
 namespace Omnishop.ReceiptPrinting
@@ -46,15 +45,14 @@ namespace Omnishop.ReceiptPrinting
             if (string.IsNullOrEmpty(barcode))
                 return string.Empty;
 
-            using (var b = new BarcodeLib.Barcode())
+            using (var b = new BarcodeStandard.Barcode())
             {
-                using (var img = b.Encode(BarcodeLib.TYPE.CODE39Extended, barcode, Color.Black, Color.Transparent, 350, 50))
+                using (var img = b.Encode(BarcodeStandard.Type.Code39Extended, barcode, 350, 50))
                 {
-                    using (var ms = new System.IO.MemoryStream())
+                    using (var skData = img.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100))
                     {
-                        img.Save(ms, ImageFormat.Png);
-                        return @"data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
-                    }
+                        return @"data:image/png;base64," + Convert.ToBase64String(skData.AsSpan().ToArray());
+                    }                   
                 }
             }
         }
